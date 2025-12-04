@@ -64,7 +64,7 @@ const ChampionDex = () => {
   return (
     <div className="champion-dex-container">
       {/* 검색창 컴포넌트 */}
-      <SearchChamp onSearch={handleSearch} />
+      <SearchChamp onSearch={handleSearch} championData={allChampions}/>
       
       {/* 상태 메시지 표시 */}
       <div className="text-center mt-3 text-muted">
