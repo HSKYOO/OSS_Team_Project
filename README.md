@@ -46,6 +46,7 @@ Environment: Visual Studio Code, Git
 
 ## 📂 폴더 구조 (Directory Structure)
 
+```bash
 oss-team-project/
 ├── public/              # 정적 파일 (index.html, manifest 등)
 ├── src/
@@ -55,8 +56,7 @@ oss-team-project/
 │   │   │   ├── Update.js
 │   │   │   ├── ChampDex.js
 │   │   │   └── SearchChamp.js
-│   │   ├── ChampInfo.js # 챔피언 상세 정보 모달
-│   │   └── ...
+│   │   └── ChampInfo.js # 챔피언 상세 정보 모달
 │   ├── App.js           # 메인 라우팅 및 레이아웃
 │   ├── App.css          # 메인 스타일 시트
 │   └── index.js         # Entry Point
