@@ -1,0 +1,19 @@
+
+.champ-modal-content {
+    background-color: #f9f9f9;
+    color: #333333;
+    border: 2px solid #C89B3C;
+}
+
+/* 챔피언 이름 */
+.champ-modal-title {
+    color: #019428;
+    font-family: 'GmarketSansMedium', sans-serif;
+    font-weight: bold;
+}
+
+/* 챔피언 부제 */
+.champ-modal-subtile {
+    color: #666;
+    font-style: italic;
+}
