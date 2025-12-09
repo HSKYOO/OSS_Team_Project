@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  background-image: url("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/5255b8c8fc9946d9313a244ef6f1a91d046b0bde-1920x1080.jpg");
+  background-size: cover;/* 화면에 꽉 차게 조절 */
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;/* 스크롤 내려도 배경은 고정되게 */
+  color: blue;
+}
+
+.navbar {
+  background-color: rgba(33, 37, 41, 0.9) !important; /* 약간 투명한 검은색 */
+  backdrop-filter: blur(5px); /* 뒤가 흐릿하게 비치는 효과 */
+}
