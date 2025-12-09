@@ -78,32 +78,52 @@ const ChampionModal = ({ show, onClose, championId, version }) => {
                 {/* 하단: 스킬 리스트 */}
                 <h5 className="fw-bold mb-3">스킬 정보</h5>
                 <div className="list-group list-group-flush">
-                  {/* 패시브 */}
-                  <div className="list-group-item d-flex align-items-start bg-light">
-                    <img 
-                      src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${champData.passive.image.full}`}
-                      style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid #d4af37', marginRight: 15 }}
-                      alt="Passive"
-                    />
-                    <div>
-                      <div className="fw-bold">패시브 - {champData.passive.name}</div>
-                      <small className="text-muted">{stripHtml(champData.passive.description)}</small>
+                  {/* 패시브 (수정됨) */}
+                  <div className="list-group-item d-flex align-items-start bg-light py-3">
+                    <div className="flex-shrink-0"> {/* 이미지 영역 고정 */}
+                      <img 
+                        src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${champData.passive.image.full}`}
+                        style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid #d4af37' }}
+                        alt="Passive"
+                      />
+                    </div>
+                    <div className="flex-grow-1 ms-3"> {/* 텍스트 영역 */}
+                      <div className="mb-1">
+                        <span className="fw-bold text-primary">패시브 - {champData.passive.name}</span>
+                      </div>
+                      <p className="text-muted small mb-0" style={{ lineHeight: '1.4' }}>
+                        {stripHtml(champData.passive.description)}
+                      </p>
                     </div>
                   </div>
 
-                  {/* 스킬 QWER */}
+                  {/* 스킬 QWER (수정됨) */}
                   {champData.spells.map((spell, idx) => {
                     const keyMap = ['Q', 'W', 'E', 'R'];
                     return (
-                      <div className="list-group-item d-flex align-items-start" key={spell.id}>
-                        <img 
-                          src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`}
-                          style={{ width: 48, height: 48, borderRadius: 4, border: '2px solid #333', marginRight: 15 }}
-                          alt={spell.name}
-                        />
-                        <div>
-                          <div className="fw-bold">[{keyMap[idx]}] {spell.name}</div>
-                          <small className="text-muted">{stripHtml(spell.description)}</small>
+                      // align-items-start로 변경하여 무조건 위쪽 정렬
+                      <div className="list-group-item d-flex align-items-start py-3" key={spell.id}>
+                        <div className="flex-shrink-0">
+                          <img 
+                            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`}
+                            style={{ width: 48, height: 48, borderRadius: 4, border: '1px solid #333' }}
+                            alt={spell.name}
+                          />
+                        </div>
+                          
+                        {/* ms-3으로 이미지와 간격 확보 */}
+                        <div className="flex-grow-1 ms-3">
+                          <div className="mb-1">
+                            <span className="fw-bold fs-6">[{keyMap[idx]}] {spell.name}</span>
+                            <span className="text-muted ms-2 small">
+                              (쿨타임: {spell.cooldownBurn}초)
+                            </span>
+                          </div>
+                            
+                          {/* 설명 텍스트 스타일 정리 */}
+                          <p className="text-muted small mb-0 text-break" style={{ lineHeight: '1.4' }}>
+                            {stripHtml(spell.description)}
+                          </p>
                         </div>
                       </div>
                     );
