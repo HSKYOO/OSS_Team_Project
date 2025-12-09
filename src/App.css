@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
+
 .App {
   text-align: center;
 }
@@ -43,10 +45,26 @@ body {
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;/* 스크롤 내려도 배경은 고정되게 */
-  color: blue;
+  color: var(--text-primary);
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 .navbar {
   background-color: rgba(33, 37, 41, 0.9) !important; /* 약간 투명한 검은색 */
   backdrop-filter: blur(5px); /* 뒤가 흐릿하게 비치는 효과 */
+}
+
+/* 팔레트 (색깔 꺼내쓰셈) */ 
+:root {
+  /* 메인 텍스트 */
+  --text-primary: #f0f0f0;
+  --text-secondary: #aaaaaa;
+
+  /* 강조 색상 */
+  --accent-color: #007bff;
+  --accent-hover: #0056b3;
+
+  /* 배경 색상 */
+  --bg-dark: #121212;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
 }
