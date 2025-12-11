@@ -69,7 +69,8 @@
 }
 
 body {
-  background-image: url("https://i.namu.wiki/i/rH1H--5wDFrFU_ChVexauhT9hV2VWBTEKloloSBedMHHdmotjMt9N4MjS2ZW8ikEkG3LBAkr3bDC4Z35zR4YpQ.webp");
+  background-color: #238af7b9;
+  /* background-image: url("https://i.namu.wiki/i/rH1H--5wDFrFU_ChVexauhT9hV2VWBTEKloloSBedMHHdmotjMt9N4MjS2ZW8ikEkG3LBAkr3bDC4Z35zR4YpQ.webp"); */
   background-size: cover; /* 화면에 꽉 차게 조절 */
   background-repeat: no-repeat;
   background-position: center center;

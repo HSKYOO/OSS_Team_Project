@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. 네비게이션 훅 임포트
+import { useNavigate } from 'react-router-dom';
 
 const MyInfo = () => {
   const [builds, setBuilds] = useState([]);
-  const navigate = useNavigate(); // 2. navigate 객체 생성
+  const navigate = useNavigate();
+  
   // 룬 이미지 매핑을 위한 데이터
   const [runeData, setRuneData] = useState([]); 
   const [latestVersion, setLatestVersion] = useState('');
@@ -46,10 +47,10 @@ const MyInfo = () => {
     }
   };
 
-  // 3. 수정 버튼 핸들러 (데이터를 가지고 이동)
+  // [수정된 부분] 수정 버튼 핸들러
   const handleEdit = (build) => {
-    // '/update' 경로로 이동하면서 현재 클릭한 build 데이터를 'state'에 담아 보냄
-    navigate('/update', { state: { build: build } });
+    // URL 뒤에 ID를 붙여서 이동 (예: /update/170234...)
+    navigate(`/update/${build.id}`);
   };
 
   const getRuneIcon = (id) => {
