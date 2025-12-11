@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom'; // 1. 네비게이션 훅 임포
 const MyInfo = () => {
   const [builds, setBuilds] = useState([]);
   const navigate = useNavigate(); // 2. navigate 객체 생성
+  // 룬 이미지 매핑을 위한 데이터
+  const [runeData, setRuneData] = useState([]); 
+  const [latestVersion, setLatestVersion] = useState('');
 
   // 데이터 불러오기
   const loadBuilds = () => {
@@ -13,6 +16,24 @@ const MyInfo = () => {
 
   useEffect(() => {
     loadBuilds();
+
+    // 룬 데이터 및 최신 버전 가져오기
+    const fetchRuneData = async () => {
+      try {
+        const vRes = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+        const vJson = await vRes.json();
+        const ver = vJson[0];
+        setLatestVersion(ver);
+
+        const rRes = await fetch(`https://ddragon.leagueoflegends.com/cdn/${ver}/data/ko_KR/runesReforged.json`);
+        const rJson = await rRes.json();
+        setRuneData(rJson);
+      } catch (err) {
+        console.error("룬 데이터 로딩 실패:", err);
+      }
+    };
+    fetchRuneData();
+
     window.addEventListener('storage', loadBuilds);
     return () => window.removeEventListener('storage', loadBuilds);
   }, []);
@@ -31,6 +52,23 @@ const MyInfo = () => {
     navigate('/update', { state: { build: build } });
   };
 
+  const getRuneIcon = (id) => {
+    if (!runeData.length || !id) return null;
+    
+    // 1단계: 룬 스타일(정밀, 지배 등)인지 확인
+    const style = runeData.find(r => r.id == id);
+    if (style) return `https://ddragon.leagueoflegends.com/cdn/img/${style.icon}`;
+
+    // 2단계: 핵심 룬(정복자 등)인지 확인
+    for (const group of runeData) {
+      for (const slot of group.slots) {
+        const rune = slot.runes.find(r => r.id == id);
+        if (rune) return `https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`;
+      }
+    }
+    return null; 
+  };
+
   // URL 생성 헬퍼
   const getSpellImg = (ver, id) => `https://ddragon.leagueoflegends.com/cdn/${ver}/img/spell/${id}.png`;
   const getItemImg = (ver, id) => `https://ddragon.leagueoflegends.com/cdn/${ver}/img/item/${id}.png`;
@@ -45,20 +83,31 @@ const MyInfo = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="fw-bold mb-4 text-white">📂 내 공략 보관함</h2>
+      <h2 className="fw-bold mb-4 text-white">내 빌드 보관함</h2>
       <div className="row g-4">
         {builds.map((build) => (
-          <div key={build.id} className="col-md-6 col-lg-4">
+          <div key={build.id} className="col-12 col-xl-6">
             <div className="card h-100 shadow-sm border-0" style={{backgroundColor: '#f8f9fa'}}>
               
               {/* 카드 헤더: 스킨 배경 */}
               <div style={{
-                height: '150px', 
-                background: `url(${getSkinImg(build.championId, build.skinId)}) center top / cover no-repeat`,
+                height: '350px', 
+                backgroundImage: `url(${getSkinImg(build.championId, build.skinId)})`,
+                backgroundPosition: 'top center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
                 position: 'relative'
               }}>
                 <div className="position-absolute bottom-0 start-0 bg-dark text-white px-3 py-1 bg-opacity-75 w-100">
                   <h5 className="m-0 fw-bold">{build.championId} <span className="fs-6 fw-normal">({build.position})</span></h5>
+                </div>
+                <div className="d-flex align-items-center bg-black bg-opacity-50 p-2 rounded border border-secondary">
+                  {build.runeStyle && (
+                    <img src={getRuneIcon(build.runeStyle)} title="룬 빌드" alt="Rune" width="40" className="me-2"/>
+                  )}
+                  {build.runeCore && (
+                    <img src={getRuneIcon(build.runeCore)} title="핵심 룬" alt="Keystone" width="40"/>
+                  )}
                 </div>
               </div>
 

@@ -30,7 +30,6 @@ const Create = () => {
   const [champSearch, setChampSearch] = useState('');      // 챔피언 검색어
   const [champSuggestions, setChampSuggestions] = useState([]); // 챔피언 자동완성 목록
   const [showChampDropdown, setShowChampDropdown] = useState(false); // 드롭다운 표시 여부
-
   const [itemSearch, setItemSearch] = useState(''); // 아이템 검색어
 
   // 포지션 아이콘 (CommunityDragon 활용)
@@ -144,8 +143,12 @@ const Create = () => {
     setFormData({ ...formData, itemBuild: newBuild });
   }
 
-  const handleRuneStyleChange = (e) => {
-    setFormData({ ...formData, runeStyle: e.target.value, runeCore: '' });
+  const handleRuneStyleChange = (styleId) => {
+    setFormData({ ...formData, runeStyle: styleId, runeCore: '' });
+  };
+
+  const handleRuneCoreChange = (coreId) => {
+    setFormData({ ...formData, runeCore: coreId });
   };
 
   const handleSave = () => {
@@ -312,22 +315,54 @@ const Create = () => {
                </div>
 
                {/* 룬 */}
-               <div className="row">
-                 <div className="col-6">
-                   <label className="small text-muted mb-1">룬 빌드</label>
-                   <select className="form-select bg-dark text-white border-secondary" name="runeStyle" value={formData.runeStyle} onChange={handleRuneStyleChange}>
-                     <option value="">선택</option>
-                     {runes.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-                   </select>
-                 </div>
-                 <div className="col-6">
-                   <label className="small text-muted mb-1">핵심 룬</label>
-                   <select className="form-select bg-dark text-white border-secondary" name="runeCore" value={formData.runeCore} onChange={handleChange} disabled={!formData.runeStyle}>
-                     <option value="">선택</option>
-                     {keystoneList.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
-                   </select>
+               <div className="mb-3">
+                 <label className="small text-muted mb-2">룬 빌드 선택</label>
+                 <div className="d-flex flex-wrap gap-2">
+                   {runes.map(r => (
+                     <div 
+                        key={r.id} 
+                        onClick={() => handleRuneStyleChange(r.id)}
+                        className={`rounded-circle p-1 border ${formData.runeStyle == r.id ? 'border-warning border-2' : 'border-secondary'}`}
+                        style={{ cursor: 'pointer', transition: '0.2s' }}
+                     >
+                       <img 
+                          src={`https://ddragon.leagueoflegends.com/cdn/img/${r.icon}`} 
+                          width="40" 
+                          height="40"
+                          alt={r.name}
+                          title={r.name}
+                          style={{ filter: formData.runeStyle == r.id ? 'none' : 'grayscale(100%) opacity(0.5)' }}
+                       />
+                     </div>
+                   ))}
                  </div>
                </div>
+
+               {/* 핵심 룬 (빌드 선택 시에만 표시) */}
+               {formData.runeStyle && (
+                 <div className="mb-2">
+                   <label className="small text-muted mb-2">핵심 룬 선택</label>
+                   <div className="d-flex flex-wrap gap-2 p-2 bg-black bg-opacity-25 rounded">
+                     {keystoneList.map(k => (
+                       <div 
+                          key={k.id} 
+                          onClick={() => handleRuneCoreChange(k.id)}
+                          className={`rounded-circle p-1 border ${formData.runeCore == k.id ? 'border-warning border-2' : 'border-secondary'}`}
+                          style={{ cursor: 'pointer', transition: '0.2s' }}
+                       >
+                         <img 
+                            src={`https://ddragon.leagueoflegends.com/cdn/img/${k.icon}`} 
+                            width="50" 
+                            height="50"
+                            alt={k.name}
+                            title={k.name}
+                            style={{ filter: formData.runeCore == k.id ? 'none' : 'grayscale(100%) opacity(0.5)' }}
+                         />
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+               )}
              </div>
            </div>
         </div>
