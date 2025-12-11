@@ -69,13 +69,14 @@
 }
 
 body {
-  background-image: url("https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/5255b8c8fc9946d9313a244ef6f1a91d046b0bde-1920x1080.jpg");
-  background-size: cover;/* 화면에 꽉 차게 조절 */
+  background-image: url("https://i.namu.wiki/i/rH1H--5wDFrFU_ChVexauhT9hV2VWBTEKloloSBedMHHdmotjMt9N4MjS2ZW8ikEkG3LBAkr3bDC4Z35zR4YpQ.webp");
+  background-size: cover; /* 화면에 꽉 차게 조절 */
   background-repeat: no-repeat;
   background-position: center center;
-  background-attachment: fixed;/* 스크롤 내려도 배경은 고정되게 */
+  background-attachment: fixed; /* 스크롤 내려도 배경은 고정되게 */
   
-  color: var(--text-primary);
+  /* 서버 코드 내용을 반영 (변수 사용 및 폰트 설정) */
+  color: var(--text-primary); 
   font-family: var(--font-body);
 }
 
