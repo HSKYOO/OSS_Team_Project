@@ -87,10 +87,8 @@ npm start
 
 [x] Data Dragon API 연동 (챔피언, 아이템 데이터 호출)
 
-[ ] Create.js: 빌드 생성 기능 구현 (진행 중)
+[x] Create.js: 빌드 생성 기능 구현 (진행 중)
 
-[ ] Read: 메인 리스트 및 상세 모달 구현
+[x] Read: 메인 리스트 및 상세 모달 구현
 
-[ ] Update/Delete: 데이터 수정 및 삭제 로직 구현
-
-[ ] (Optional) FAQ 페이지 추가
+[x] Update/Delete: 데이터 수정 및 삭제 로직 구현
