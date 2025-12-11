@@ -1,5 +1,6 @@
 // src/components/ChampionModal.js
 import React, { useEffect, useState } from 'react';
+import './ChampionModal.css';
 
 const ChampionModal = ({ show, onClose, championId, version }) => {
   const [champData, setChampData] = useState(null);
@@ -40,10 +41,10 @@ const ChampionModal = ({ show, onClose, championId, version }) => {
     // Bootstrap Modal을 수동으로 제어하기 위한 스타일
     <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div className="modal-content">
+        <div className="modal-content champ-modal-content">
           
           <div className="modal-header">
-            <h5 className="modal-title fw-bold">
+            <h5 className="modal-title champ-modal-title fs-3">
               {champData ? champData.name : 'Loading...'}
             </h5>
             <button type="button" class="btn-close" onClick={onClose}></button>
