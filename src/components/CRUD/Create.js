@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
+import { useNavigate } from 'react-router-dom';
 
 const Create = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // URL에서 id 가져오기 (있으면 수정 모드, 없으면 생성 모드)
-  const isEditMode = Boolean(id); // 수정 모드인지 확인하는 플래그
-
-  // --- 1. 데이터셋 State ---
+  
+  // 데이터셋 State ---
   const [version, setVersion] = useState('');
   const [champions, setChampions] = useState([]);
   const [items, setItems] = useState([]);
   const [spells, setSpells] = useState([]);
   const [runes, setRunes] = useState([]);
   
-  // --- 2. 폼 데이터 State ---
+  // 폼 데이터 & 선택 State ---
   const [formData, setFormData] = useState({
     championId: '',
     position: 'TOP',
-    skinId: '0',
+    skinId: '0', // 기본 스킨 '0'
     spell1: '',
     spell2: '',
     skillOrder: 'Q>W>E',
@@ -26,14 +24,15 @@ const Create = () => {
     itemBuild: []
   });
 
-  const [selectedChampDetail, setSelectedChampDetail] = useState(null);
+  const [selectedChampDetail, setSelectedChampDetail] = useState(null); // 스킨 목록용 상세 데이터
 
-  // --- 3. UI 제어 State ---
-  const [champSearch, setChampSearch] = useState('');      
-  const [champSuggestions, setChampSuggestions] = useState([]); 
-  const [showChampDropdown, setShowChampDropdown] = useState(false); 
-  const [itemSearch, setItemSearch] = useState(''); 
+  // 검색 및 UI 제어 State ---
+  const [champSearch, setChampSearch] = useState('');      // 챔피언 검색어
+  const [champSuggestions, setChampSuggestions] = useState([]); // 챔피언 자동완성 목록
+  const [showChampDropdown, setShowChampDropdown] = useState(false); // 드롭다운 표시 여부
+  const [itemSearch, setItemSearch] = useState(''); // 아이템 검색어
 
+  // 포지션 아이콘 (CommunityDragon 활용)
   const positions = [
     { key: 'TOP', name: '탑', icon: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png' },
     { key: 'JUNGLE', name: '정글', icon: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png' },
@@ -42,7 +41,7 @@ const Create = () => {
     { key: 'UTILITY', name: '서폿', icon: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png' },
   ];
 
-  // --- 4. 초기 데이터 로딩 (API) ---
+  // 초기 데이터 로딩 ---
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,11 +62,10 @@ const Create = () => {
         const sJson = await sRes.json();
         const rJson = await rRes.json();
 
-        // 챔피언 리스트 저장
-        const champList = Object.values(cJson.data).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-        setChampions(champList);
+        // 챔피언 정렬
+        setChampions(Object.values(cJson.data).sort((a, b) => a.name.localeCompare(b.name, 'ko')));
         
-        // 아이템 필터링
+        // 아이템 필터링 (중복 제거)
         const rawItems = Object.values(iJson.data);
         const uniqueItems = [];
         const itemNames = new Set();
@@ -78,51 +76,35 @@ const Create = () => {
           }
         });
         setItems(uniqueItems.sort((a, b) => a.name.localeCompare(b.name, 'ko')));
-        setSpells(Object.values(sJson.data).filter(spell => spell.modes.includes("CLASSIC")));
-        setRunes(rJson);
 
-        // ★ [수정 모드 로직] 데이터 로딩이 끝난 후, 수정할 데이터를 채워넣음
-        if (id) {
-          const savedList = JSON.parse(localStorage.getItem('myBuilds')) || [];
-          const targetBuild = savedList.find(b => b.id === Number(id)); // ID로 찾기
-          
-          if (targetBuild) {
-            setFormData(targetBuild); // 폼 데이터 채우기
-            
-            // 검색창에 챔피언 이름(한글) 채워주기 (UI용)
-            const targetChamp = champList.find(c => c.id === targetBuild.championId);
-            if (targetChamp) setChampSearch(targetChamp.name);
-          }
-        }
+        // 스펠 필터링
+        setSpells(Object.values(sJson.data).filter(spell => spell.modes.includes("CLASSIC")));
+        
+        // 룬 설정
+        setRunes(rJson);
 
       } catch (err) {
         console.error("데이터 로딩 실패:", err);
       }
     };
     fetchData();
-  }, [id]); // id가 바뀔 때도 실행 (URL 변경 대응)
+  }, []);
 
-
-  // --- 5. 챔피언 스킨 가져오기 ---
+  // 챔피언 상세 정보(스킨) 가져오기 ---
   useEffect(() => {
     if (formData.championId && version) {
       const fetchSkin = async () => {
         const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/ko_KR/champion/${formData.championId}.json`);
         const json = await res.json();
         setSelectedChampDetail(json.data[formData.championId]);
-        
-        // 주의: 수정 모드일 때는 스킨 ID를 초기화하면 안 됨!
-        // 새로 챔피언을 바꿀 때만 초기화해야 함.
-        // 여기서는 간단히 하기 위해, formData에 이미 값이 있으면(수정모드) 유지, 없으면 0
-        // 하지만 사용자가 챔피언을 바꾸는 경우를 위해 별도 로직이 필요할 수 있음.
-        // (현재 구조상 챔피언을 바꾸면 formData.championId가 바뀌므로 여기서 처리됨)
+        setFormData(prev => ({ ...prev, skinId: '0' })); // 챔피언 바뀌면 스킨 초기화
       };
       fetchSkin();
     }
   }, [formData.championId, version]);
 
 
-  // --- 검색 로직 ---
+  // 챔피언 검색 로직 (자동완성) ---
   const handleChampSearch = (e) => {
     const input = e.target.value;
     setChampSearch(input);
@@ -132,6 +114,7 @@ const Create = () => {
       setChampSuggestions([]);
       return;
     }
+
     const filtered = champions.filter(c => 
       c.name.includes(input) || c.id.toLowerCase().includes(input.toLowerCase())
     );
@@ -139,13 +122,13 @@ const Create = () => {
   };
 
   const selectChampion = (champ) => {
-    // 챔피언을 새로 선택하면 스킨을 기본값으로 리셋
-    setFormData({ ...formData, championId: champ.id, skinId: '0' });
-    setChampSearch(champ.name);
-    setShowChampDropdown(false);
+    setFormData({ ...formData, championId: champ.id });
+    setChampSearch(champ.name); // 검색창에 이름 채움
+    setShowChampDropdown(false); // 드롭다운 닫기
   };
 
-  // --- 핸들러들 ---
+
+  // --- 7. 일반 핸들러 ---
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -160,30 +143,20 @@ const Create = () => {
     setFormData({ ...formData, itemBuild: newBuild });
   }
 
-  const handleRuneStyleChange = (e) => {
-    setFormData({ ...formData, runeStyle: e.target.value, runeCore: '' });
+  const handleRuneStyleChange = (styleId) => {
+    setFormData({ ...formData, runeStyle: styleId, runeCore: '' });
   };
 
-  // ★ 저장 핸들러 (수정/생성 분기 처리)
+  const handleRuneCoreChange = (coreId) => {
+    setFormData({ ...formData, runeCore: coreId });
+  };
+
   const handleSave = () => {
     if (!formData.championId) return alert("챔피언을 선택해주세요.");
-    
     const savedList = JSON.parse(localStorage.getItem('myBuilds')) || [];
-    
-    if (isEditMode) {
-      // [수정] 기존 ID를 찾아서 교체 (map)
-      const updatedList = savedList.map(build => 
-        build.id === Number(id) ? { ...formData, id: Number(id), version } : build
-      );
-      localStorage.setItem('myBuilds', JSON.stringify(updatedList));
-      alert("빌드가 성공적으로 수정되었습니다!");
-    } else {
-      // [생성] 새로운 ID로 추가
-      const newBuild = { ...formData, id: Date.now(), version };
-      localStorage.setItem('myBuilds', JSON.stringify([...savedList, newBuild]));
-      alert("빌드가 생성되었습니다!");
-    }
-    
+    const newBuild = { ...formData, id: Date.now(), version };
+    localStorage.setItem('myBuilds', JSON.stringify([...savedList, newBuild]));
+    alert("챔피언 빌드가 저장되었습니다!");
     navigate('/myinfo');
   }
 
@@ -192,26 +165,26 @@ const Create = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="fw-bold mb-4 text-white">
-        {/* 제목도 상황에 따라 변경 */}
-        {isEditMode ? '챔피언 빌드 수정' : '챔피언 빌드 생성'}
-      </h2>
+      <h2 className="fw-bold mb-4 text-white">챔피언 빌드 생성</h2>
       
+      {/* --- 섹션 1: 챔피언 & 포지션 선택 --- */}
       <div className="card bg-dark text-white mb-4 shadow-lg border-secondary">
         <div className="card-body p-4">
           <div className="row g-4">
             
-            {/* 1. 챔피언 검색 */}
+            {/* 1. 챔피언 검색 (이미지 드롭다운) */}
             <div className="col-md-7 position-relative">
-              <label className="form-label fw-bold text-warning">1. 챔피언 선택</label>
+              <label className="form-label fw-bold text-warning">챔피언 선택</label>
               <div className="input-group input-group-lg">
                 <span className="input-group-text bg-secondary text-white border-0">🔍</span>
                 <input 
                   type="text" 
                   className="form-control bg-dark text-white border-secondary"
-                  value={champSearch} // 여기서 챔피언 이름이 표시됨
+                  placeholder="챔피언 검색 (예: 아리, garen)"
+                  value={champSearch}
                   onChange={handleChampSearch}
                   onFocus={() => setShowChampDropdown(true)}
+                  // onBlur -> setTimeout을 줘야 클릭 이벤트가 씹히지 않음 (생략 가능하나 UX위해 주의)
                 />
               </div>
 
@@ -233,7 +206,7 @@ const Create = () => {
                 </ul>
               )}
 
-              {/* 선택된 챔피언 미리보기 */}
+              {/* 선택된 챔피언 미리보기 (크게) */}
               {formData.championId && (
                 <div className="mt-3 position-relative rounded overflow-hidden shadow" style={{ height: '200px' }}>
                   <img 
@@ -249,9 +222,9 @@ const Create = () => {
               )}
             </div>
 
-            {/* 2. 포지션 선택 */}
+            {/* 2. 포지션 선택 (아이콘 버튼) */}
             <div className="col-md-5">
-              <label className="form-label fw-bold text-warning">2. 포지션 선택</label>
+              <label className="form-label fw-bold text-warning">포지션 선택</label>
               <div className="d-flex justify-content-between gap-2 bg-secondary bg-opacity-25 p-3 rounded border border-secondary">
                 {positions.map(pos => (
                   <div 
@@ -267,10 +240,10 @@ const Create = () => {
               </div>
             </div>
 
-            {/* 3. 스킨 선택 */}
+            {/* 3. 스킨 선택 (가로 스크롤 카드) */}
             {selectedChampDetail && (
               <div className="col-12">
-                <label className="form-label fw-bold text-warning">3. 스킨 선택</label>
+                <label className="form-label fw-bold text-warning">스킨 선택</label>
                 <div className="d-flex gap-3 overflow-auto pb-3 custom-scrollbar" style={{ whiteSpace: 'nowrap' }}>
                   {selectedChampDetail.skins.map(skin => (
                     <div 
@@ -297,11 +270,12 @@ const Create = () => {
         </div>
       </div>
 
+
+      {/* --- 섹션 2: 인게임 설정 (스펠, 룬, 스킬) --- */}
       <div className="row g-4">
-        {/* 인게임 설정 (스펠, 룬, 스킬) */}
         <div className="col-lg-6">
            <div className="card bg-dark text-white border-secondary h-100">
-             <div className="card-header border-secondary fw-bold text-warning">4. 인게임 설정</div>
+             <div className="card-header border-secondary fw-bold text-warning">인게임 설정</div>
              <div className="card-body">
                {/* 스펠 */}
                <div className="row mb-3">
@@ -341,32 +315,64 @@ const Create = () => {
                </div>
 
                {/* 룬 */}
-               <div className="row">
-                 <div className="col-6">
-                   <label className="small text-muted mb-1">룬 빌드</label>
-                   <select className="form-select bg-dark text-white border-secondary" name="runeStyle" value={formData.runeStyle} onChange={handleRuneStyleChange}>
-                     <option value="">선택</option>
-                     {runes.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-                   </select>
-                 </div>
-                 <div className="col-6">
-                   <label className="small text-muted mb-1">핵심 룬</label>
-                   <select className="form-select bg-dark text-white border-secondary" name="runeCore" value={formData.runeCore} onChange={handleChange} disabled={!formData.runeStyle}>
-                     <option value="">선택</option>
-                     {keystoneList.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
-                   </select>
+               <div className="mb-3">
+                 <label className="small text-muted mb-2">룬 빌드 선택</label>
+                 <div className="d-flex flex-wrap gap-2">
+                   {runes.map(r => (
+                     <div 
+                        key={r.id} 
+                        onClick={() => handleRuneStyleChange(r.id)}
+                        className={`rounded-circle p-1 border ${formData.runeStyle == r.id ? 'border-warning border-2' : 'border-secondary'}`}
+                        style={{ cursor: 'pointer', transition: '0.2s' }}
+                     >
+                       <img 
+                          src={`https://ddragon.leagueoflegends.com/cdn/img/${r.icon}`} 
+                          width="40" 
+                          height="40"
+                          alt={r.name}
+                          title={r.name}
+                          style={{ filter: formData.runeStyle == r.id ? 'none' : 'grayscale(100%) opacity(0.5)' }}
+                       />
+                     </div>
+                   ))}
                  </div>
                </div>
+
+               {/* 핵심 룬 (빌드 선택 시에만 표시) */}
+               {formData.runeStyle && (
+                 <div className="mb-2">
+                   <label className="small text-muted mb-2">핵심 룬 선택</label>
+                   <div className="d-flex flex-wrap gap-2 p-2 bg-black bg-opacity-25 rounded">
+                     {keystoneList.map(k => (
+                       <div 
+                          key={k.id} 
+                          onClick={() => handleRuneCoreChange(k.id)}
+                          className={`rounded-circle p-1 border ${formData.runeCore == k.id ? 'border-warning border-2' : 'border-secondary'}`}
+                          style={{ cursor: 'pointer', transition: '0.2s' }}
+                       >
+                         <img 
+                            src={`https://ddragon.leagueoflegends.com/cdn/img/${k.icon}`} 
+                            width="50" 
+                            height="50"
+                            alt={k.name}
+                            title={k.name}
+                            style={{ filter: formData.runeCore == k.id ? 'none' : 'grayscale(100%) opacity(0.5)' }}
+                         />
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+               )}
              </div>
            </div>
         </div>
 
-        {/* 아이템 빌드 */}
+        {/* --- 섹션 3: 아이템 빌드 --- */}
         <div className="col-lg-6">
           <div className="card bg-dark text-white border-secondary h-100">
-             <div className="card-header border-secondary fw-bold text-warning">5. 아이템 빌드 (최대 6개)</div>
+             <div className="card-header border-secondary fw-bold text-warning">아이템 빌드 (최대 6개)</div>
              <div className="card-body">
-               {/* 선택된 아이템 */}
+               {/* 선택된 아이템 리스트 */}
                <div className="d-flex gap-2 mb-3 p-3 bg-black bg-opacity-25 rounded border border-secondary" style={{ minHeight: '80px' }}>
                  {formData.itemBuild.length === 0 && <span className="text-muted small align-self-center">아이템을 추가하세요.</span>}
                  {formData.itemBuild.map((id, idx) => (
@@ -378,10 +384,11 @@ const Create = () => {
                  ))}
                </div>
 
+               {/* 아이템 검색 */}
                <input 
                   type="text" 
                   className="form-control bg-dark text-white border-secondary mb-2" 
-                  placeholder="아이템 이름 검색..." 
+                  placeholder="아이템 취소를 원하면 아이템 클릭" 
                   onChange={(e) => setItemSearch(e.target.value)} 
                 />
                 <div className="d-flex flex-wrap gap-1 p-2 custom-scrollbar" style={{maxHeight: '200px', overflowY: 'auto'}}>
@@ -405,9 +412,8 @@ const Create = () => {
       </div>
 
       <div className="mt-4">
-        {/* 버튼 텍스트 변경 */}
-        <button className={`btn w-100 btn-lg fw-bold shadow-sm ${isEditMode ? 'btn-warning' : 'btn-primary'}`} onClick={handleSave}>
-          {isEditMode ? '빌드 수정하기' : '빌드 생성하기'}
+        <button className="btn btn-primary w-100 btn-lg fw-bold shadow-sm" onClick={handleSave}>
+          빌드 생성하기
         </button>
       </div>
     </div>

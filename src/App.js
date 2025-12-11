@@ -56,7 +56,6 @@ function App() {
         <Routes>
           <Route path="/" element={<ChampDex />} />
           <Route path="/create" element={<Create />} />
-          <Route path="/edit/:id" element={<Create />} />
           <Route path="/myinfo" element={<MyInfo />} />
           <Route path="/update" element={<Update />} />
         </Routes>
