@@ -2,6 +2,7 @@ import { Routes, Route, NavLink } from 'react-router-dom'; // 라우터 관련 �
 import ChampDex from './components/ChampDex';
 import Create from './components/CRUD/Create';
 import MyInfo from './components/CRUD/MyInfo';
+import Update from './components/CRUD/Update';
 import './App.css';
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
           <Route path="/create" element={<Create />} />
           <Route path="/edit/:id" element={<Create />} />
           <Route path="/myinfo" element={<MyInfo />} />
+          <Route path="/update" element={<Update />} />
         </Routes>
       </div>
     </div>

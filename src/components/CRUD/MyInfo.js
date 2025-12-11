@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
 
 const MyInfo = () => {
@@ -6,9 +7,17 @@ const MyInfo = () => {
   const [runeData, setRuneData] = useState([]); // 룬 이미지 찾기용 데이터
   const [latestVersion, setLatestVersion] = useState('');
   const navigate = useNavigate();
+=======
+import { useNavigate } from 'react-router-dom'; // 1. 네비게이션 훅 임포트
+
+const MyInfo = () => {
+  const [builds, setBuilds] = useState([]);
+  const navigate = useNavigate(); // 2. navigate 객체 생성
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
 
   // 데이터 불러오기 (Local Storage + Rune API)
   useEffect(() => {
+<<<<<<< HEAD
     const initData = async () => {
       // 저장된 빌드 가져오기
       const saved = JSON.parse(localStorage.getItem('myBuilds')) || [];
@@ -36,6 +45,11 @@ const MyInfo = () => {
     const handleStorageChange = () => initData();
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
+=======
+    loadBuilds();
+    window.addEventListener('storage', loadBuilds);
+    return () => window.removeEventListener('storage', loadBuilds);
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
   }, []);
 
   const handleDelete = (id) => {
@@ -46,6 +60,7 @@ const MyInfo = () => {
     }
   };
 
+<<<<<<< HEAD
   // --- 헬퍼 함수들 ---
 
   // 룬 ID로 이미지 경로 찾기 (Data Dragon 구조 탐색)
@@ -66,21 +81,37 @@ const MyInfo = () => {
     return null; // 못 찾음
   };
 
+=======
+  // 3. 수정 버튼 핸들러 (데이터를 가지고 이동)
+  const handleEdit = (build) => {
+    // '/update' 경로로 이동하면서 현재 클릭한 build 데이터를 'state'에 담아 보냄
+    navigate('/update', { state: { build: build } });
+  };
+
+  // URL 생성 헬퍼
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
   const getSpellImg = (ver, id) => `https://ddragon.leagueoflegends.com/cdn/${ver}/img/spell/${id}.png`;
   const getItemImg = (ver, id) => `https://ddragon.leagueoflegends.com/cdn/${ver}/img/item/${id}.png`;
   // 스킨 이미지는 로딩(loading)보다 스플래시(splash)가 더 크고 멋있지만, 로딩화면 비율(loading)을 유지하며 크게 보여줌.
   const getSkinImg = (id, num) => `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${id}_${num || 0}.jpg`;
 
+<<<<<<< HEAD
 
   if (builds.length === 0) return (
     <div className="text-center py-5">
       <h3 className="text-muted">아직 저장된 빌드가 없습니다.</h3>
+=======
+  if (builds.length === 0) return (
+    <div className="text-center py-5 text-white">
+      <h3>저장된 공략이 없습니다.</h3>
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
       <p>챔피언 빌드 생성 메뉴에서 나만의 공략을 만들어보세요!</p>
     </div>
   );
 
   return (
     <div className="container py-4">
+<<<<<<< HEAD
       <h2 className="fw-bold mb-4 text-white">내 빌드 보관함</h2>
       
       {/* 카드 크기를 키우기 위해 col-lg-4 -> col-xl-6 (한 줄에 2개) 또는 col-12 (한 줄에 1개) 사용 */}
@@ -90,6 +121,15 @@ const MyInfo = () => {
             <div className="card h-100 shadow border-0 overflow-hidden bg-dark text-white">
               
               {/* --- 상단: 스킨 이미지 (높이 300px로 확대) --- */}
+=======
+      <h2 className="fw-bold mb-4 text-white">📂 내 공략 보관함</h2>
+      <div className="row g-4">
+        {builds.map((build) => (
+          <div key={build.id} className="col-md-6 col-lg-4">
+            <div className="card h-100 shadow-sm border-0" style={{backgroundColor: '#f8f9fa'}}>
+              
+              {/* 카드 헤더: 스킨 배경 */}
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
               <div style={{
                 height: '350px', 
                 backgroundImage: `url(${getSkinImg(build.championId, build.skinId)})`,
@@ -121,6 +161,7 @@ const MyInfo = () => {
                 </div>
               </div>
 
+<<<<<<< HEAD
               {/* --- 하단: 상세 정보 --- */}
               <div className="card-body p-4 bg-secondary bg-opacity-10">
                 <div className="row align-items-center">
@@ -138,8 +179,18 @@ const MyInfo = () => {
                       <small className="text-muted d-block mb-1">스킬 마스터리</small>
                       <span className="badge bg-warning text-dark fs-5 fw-bold">{build.skillOrder}</span>
                     </div>
+=======
+              <div className="card-body">
+                {/* 스펠 & 스킬 */}
+                <div className="mb-3 d-flex align-items-center">
+                  <div className="me-3">
+                    <small className="d-block text-muted mb-1">스펠</small>
+                    {build.spell1 && <img src={getSpellImg(build.version, build.spell1)} width="30" className="me-1 rounded border border-secondary" alt="D"/>}
+                    {build.spell2 && <img src={getSpellImg(build.version, build.spell2)} width="30" className="rounded border border-secondary" alt="F"/>}
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
                   </div>
 
+<<<<<<< HEAD
                   {/* 아이템 빌드 */}
                   <div className="col-md-7">
                     <small className="text-muted d-block mb-1">최종 아이템</small>
@@ -155,10 +206,20 @@ const MyInfo = () => {
                         </div>
                       )) : <span className="text-muted small">아이템 없음</span>}
                     </div>
+=======
+                {/* 아이템 빌드 */}
+                <div className="mb-3">
+                  <small className="d-block text-muted mb-1">아이템 트리</small>
+                  <div className="d-flex flex-wrap gap-1">
+                    {build.itemBuild.length > 0 ? build.itemBuild.map((item, idx) => (
+                      <img key={idx} src={getItemImg(build.version, item)} width="35" className="rounded border border-secondary" alt="item"/>
+                    )) : <span className="text-muted small">아이템 없음</span>}
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
                   </div>
                 </div>
               </div>
 
+<<<<<<< HEAD
               <div className="card-footer bg-dark border-top border-secondary d-flex justify-content-between align-items-center">
                 <small className="text-muted">버전: {build.version}</small>
                 <div>
@@ -174,7 +235,24 @@ const MyInfo = () => {
                     🗑 삭제
                   </button>
                 </div>
+=======
+              {/* 4. 수정 / 삭제 버튼 영역 */}
+              <div className="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
+                <button 
+                  className="btn btn-sm btn-primary" // 파란색 버튼
+                  onClick={() => handleEdit(build)}
+                >
+                  수정
+                </button>
+                <button 
+                  className="btn btn-sm btn-outline-danger" // 빨간색 테두리 버튼
+                  onClick={() => handleDelete(build.id)}
+                >
+                  삭제
+                </button>
+>>>>>>> 412d10cd368fdfd33a1558a2ee029c4a2b3d2b0c
               </div>
+
             </div>
           </div>
         ))}
