@@ -8,7 +8,7 @@ const ChampionDex = () => {
   const [selectedId, setSelectedId] = useState(null); 
   const [status, setStatus] = useState('데이터 로딩 중...');
 
-  // 1. 초기 데이터 로드 (버전 및 챔피언 목록)
+  // 1. 초기 데이터 로드 
   useEffect(() => {
     const initData = async () => {
       try {
