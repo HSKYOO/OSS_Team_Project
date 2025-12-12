@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const MyInfo = () => {
   const [builds, setBuilds] = useState([]);
   const navigate = useNavigate();
-  
-  // 룬 이미지 매핑을 위한 데이터
   const [runeData, setRuneData] = useState([]); 
   const [latestVersion, setLatestVersion] = useState('');
 
@@ -47,20 +45,19 @@ const MyInfo = () => {
     }
   };
 
-  // [수정된 부분] 수정 버튼 핸들러
+  // 수정 버튼 핸들러
   const handleEdit = (build) => {
-    // URL 뒤에 ID를 붙여서 이동 (예: /update/170234...)
     navigate(`/update/${build.id}`);
   };
 
   const getRuneIcon = (id) => {
     if (!runeData.length || !id) return null;
     
-    // 1단계: 룬 스타일(정밀, 지배 등)인지 확인
+    // 룬 스타일
     const style = runeData.find(r => r.id == id);
     if (style) return `https://ddragon.leagueoflegends.com/cdn/img/${style.icon}`;
 
-    // 2단계: 핵심 룬(정복자 등)인지 확인
+    // 핵심 룬
     for (const group of runeData) {
       for (const slot of group.slots) {
         const rune = slot.runes.find(r => r.id == id);
@@ -142,16 +139,16 @@ const MyInfo = () => {
                 </div>
               </div>
 
-              {/* 4. 수정 / 삭제 버튼 영역 */}
+              {/* 수정 / 삭제 버튼 영역 */}
               <div className="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
                 <button 
-                  className="btn btn-sm btn-primary" // 파란색 버튼
+                  className="btn btn-sm btn-primary"
                   onClick={() => handleEdit(build)}
                 >
                   수정
                 </button>
                 <button 
-                  className="btn btn-sm btn-outline-danger" // 빨간색 테두리 버튼
+                  className="btn btn-sm btn-outline-danger"
                   onClick={() => handleDelete(build.id)}
                 >
                   삭제

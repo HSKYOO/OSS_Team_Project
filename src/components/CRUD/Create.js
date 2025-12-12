@@ -4,14 +4,12 @@ import { useNavigate } from 'react-router-dom';
 const Create = () => {
   const navigate = useNavigate();
   
-  // --- 데이터셋 State ---
   const [version, setVersion] = useState('');
   const [champions, setChampions] = useState([]);
   const [items, setItems] = useState([]);
   const [spells, setSpells] = useState([]);
   const [runes, setRunes] = useState([]);
   
-  // --- 폼 데이터 & 선택 State ---
   const [formData, setFormData] = useState({
     championId: '',
     position: 'TOP',
@@ -19,18 +17,15 @@ const Create = () => {
     spell1: '',
     spell2: '',
     skillOrder: 'Q>W>E',
-    // 핵심 룬
     runeStyle: '',     
     runeCore: '',      
     runeSlot1: '',     
     runeSlot2: '',     
     runeSlot3: '',
-    // 보조 룬
     runeSubStyle: '',
     runeSubSlot1: '',
     runeSubSlot2: '',
     runeSubSlot3: '', 
-    // 파편 삭제됨
     itemBuild: []
   });
 
@@ -133,12 +128,10 @@ const Create = () => {
     setFormData({ ...formData, itemBuild: formData.itemBuild.filter((_, i) => i !== index) });
   }
 
-  // --- 스펠 선택 핸들러 (이미지 클릭용) ---
   const handleSpellSelect = (slot, spellId) => {
     setFormData(prev => ({ ...prev, [slot]: spellId }));
   };
 
-  // 핵심 룬 스타일 변경
   const handleRuneStyleChange = (styleId) => {
     setFormData({ 
       ...formData, 
@@ -149,12 +142,10 @@ const Create = () => {
   const handleRuneCoreChange = (coreId) => setFormData({ ...formData, runeCore: coreId });
   const handleRuneSubChange = (slotIndex, runeId) => setFormData(prev => ({ ...prev, [`runeSlot${slotIndex}`]: runeId }));
 
-  // 보조 룬 스타일 변경
   const handleRuneSubStyleChange = (styleId) => {
     setFormData({ ...formData, runeSubStyle: styleId, runeSubSlot1: '', runeSubSlot2: '', runeSubSlot3: '' });
   };
 
-  // 보조 룬 3줄 중 2개 선택 (FIFO 방식)
   const handleRuneSubSlotChange = (clickedSlotIdx, runeId) => {
     const currentSlots = {
       1: formData.runeSubSlot1,
@@ -190,7 +181,6 @@ const Create = () => {
     navigate('/myinfo');
   }
 
-  // == 대신 === 사용 (타입 불일치 방지를 위해 String() 변환 후 비교)
   const selectedRuneStyleObj = runes.find(r => String(r.id) === String(formData.runeStyle));
   const selectedSubRuneStyleObj = runes.find(r => String(r.id) === String(formData.runeSubStyle));
 
@@ -207,7 +197,7 @@ const Create = () => {
     transform: isSelected ? 'scale(1.1)' : 'scale(1)'
   });
 
-  // [추가] 스펠 아이콘 스타일
+  // 스펠 아이콘 스타일
   const spellIconStyle = (isSelected, isDisabled) => ({
     width: '40px',
     height: '40px',
@@ -222,7 +212,7 @@ const Create = () => {
     <div className="container py-4">
       <h2 className="fw-bold mb-4 text-white">챔피언 빌드 생성</h2>
       
-      {/* --- 섹션 1: 챔피언 & 포지션 & 스킨 --- */}
+      {/* --- 챔피언 & 포지션 & 스킨 --- */}
       <div className="card bg-dark text-white mb-4 shadow-lg border-secondary">
         <div className="card-body p-4">
           <div className="row g-4">
@@ -282,14 +272,12 @@ const Create = () => {
         </div>
       </div>
 
-      {/* --- 섹션 2: 인게임 설정 --- */}
+      {/* --- 인게임 설정 --- */}
       <div className="row g-4">
         <div className="col-lg-12">
            <div className="card bg-dark text-white border-secondary h-100">
              <div className="card-header border-secondary fw-bold text-warning">인게임 설정</div>
              <div className="card-body">
-               
-               {/* 스펠 & 스킬 (드롭다운 -> 이미지 선택으로 변경됨) */}
                <div className="row mb-4">
                  <div className="col-md-7">
                     <label className="small text-muted mb-2 fw-bold">스펠 선택</label>
@@ -301,7 +289,7 @@ const Create = () => {
                           <div className="d-flex flex-wrap gap-2 justify-content-center">
                             {spells.map(s => {
                                const isSelected = String(formData.spell1) === String(s.id);
-                               const isDisabled = String(formData.spell2) === String(s.id); // F스펠과 중복 방지
+                               const isDisabled = String(formData.spell2) === String(s.id);
                                return (
                                  <img 
                                     key={s.id} 
@@ -324,7 +312,7 @@ const Create = () => {
                           <div className="d-flex flex-wrap gap-2 justify-content-center">
                             {spells.map(s => {
                                const isSelected = String(formData.spell2) === String(s.id);
-                               const isDisabled = String(formData.spell1) === String(s.id); // D스펠과 중복 방지
+                               const isDisabled = String(formData.spell1) === String(s.id);
                                return (
                                  <img 
                                     key={s.id} 
@@ -362,11 +350,10 @@ const Create = () => {
 
                {/* --- 룬 설정 --- */}
                <div className="row g-4">
-                 {/* === 왼쪽: 핵심 룬 빌드 === */}
+                 {/* 메인 룬 빌드 */}
                  <div className="col-md-6 border-end border-secondary pe-4">
                    <h5 className="fw-bold text-warning mb-3">핵심 룬 빌드</h5>
                    
-                   {/* 스타일 선택 */}
                    <div className="d-flex gap-3 mb-4 justify-content-center">
                      {runes.map(r => (
                        <img key={r.id} 
@@ -411,11 +398,10 @@ const Create = () => {
                    )}
                  </div>
 
-                 {/* === 오른쪽: 보조 룬 === */}
+                 {/* 보조 룬 */}
                  <div className="col-md-6 ps-4">
                     <h5 className="fw-bold text-warning mb-3">보조 룬 빌드</h5>
                     
-                    {/* 보조 스타일 선택 */}
                     <div className="d-flex gap-3 mb-4 justify-content-center">
                       {runes.filter(r => String(r.id) !== String(formData.runeStyle)).map(r => (
                         <img key={r.id} 
@@ -433,8 +419,6 @@ const Create = () => {
                           const slotNum = idx + 1; 
                           const currentVal = formData[`runeSubSlot${slotNum}`];
                           const isActiveRow = currentVal !== '';
-                          
-                          // 2줄 선택되면 나머지는 흐리게 처리
                           const activeRowCount = [1, 2, 3].filter(n => formData[`runeSubSlot${n}`] !== '').length;
                           const isDimmed = !isActiveRow && activeRowCount >= 2;
 
@@ -457,13 +441,11 @@ const Create = () => {
                     )}
                  </div>
                </div>
-               {/* --- 룬 설정 끝 --- */}
-
              </div>
            </div>
         </div>
 
-        {/* --- 섹션 3: 아이템 빌드 --- */}
+        {/* --- 아이템 빌드 --- */}
         <div className="col-lg-12">
           <div className="card bg-dark text-white border-secondary h-100">
               <div className="card-header border-secondary fw-bold text-warning">아이템 빌드 (최대 6개)</div>

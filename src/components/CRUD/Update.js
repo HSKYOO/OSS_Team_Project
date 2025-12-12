@@ -251,7 +251,7 @@ const Update = () => {
     <div className="container py-4">
       <h2 className="fw-bold mb-4 text-white">챔피언 빌드 수정</h2> {/* 타이틀 변경 */}
       
-      {/* --- 섹션 1: 챔피언 & 포지션 & 스킨 --- */}
+      {/* 챔피언 & 포지션 & 스킨 */}
       <div className="card bg-dark text-white mb-4 shadow-lg border-secondary">
         <div className="card-body p-4">
           <div className="row g-4">
@@ -311,7 +311,7 @@ const Update = () => {
         </div>
       </div>
 
-      {/* --- 섹션 2: 인게임 설정 --- */}
+      {/* 인게임 설정 --- */}
       <div className="row g-4">
         <div className="col-lg-12">
            <div className="card bg-dark text-white border-secondary h-100">
@@ -478,7 +478,7 @@ const Update = () => {
       </div>
 
       <div className="mt-4">
-        {/* 버튼 텍스트 변경: 수정 완료 */}
+        {/* 버튼 텍스트 */}
         <button className="btn btn-primary w-100 btn-lg fw-bold shadow-sm" onClick={handleUpdate}>수정 완료</button>
       </div>
     </div>
