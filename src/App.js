@@ -23,10 +23,7 @@ function App() {
             LoL App
           </span>
           
-          <div className="d-flex gap-2">
-            {/* NavLink는 현재 URL과 일치하면 자동으로 'active' 클래스가 붙습니다. 
-                이를 이용해서 버튼 색상을 동적으로 바꿀 수 있습니다. */}
-                
+          <div className="d-flex gap-2">    
             <NavLink 
               to="/" 
               className={({ isActive }) => `btn btn-sm ${isActive ? 'btn-primary' : 'btn-outline-light'}`}

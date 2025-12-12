@@ -28,7 +28,7 @@ const ChampionModal = ({ show, onClose, championId, version }) => {
     }
   };
 
-  // 텍스트 내의 HTML 태그 제거 함수 (정규식)
+  // 텍스트 내의 HTML 태그 제거 함수 
   const stripHtml = (html) => {
     const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
@@ -79,7 +79,7 @@ const ChampionModal = ({ show, onClose, championId, version }) => {
                 {/* 하단: 스킬 리스트 */}
                 <h5 className="fw-bold mb-3">스킬 정보</h5>
                 <div className="list-group list-group-flush">
-                  {/* 패시브 (수정됨) */}
+                  {/* 패시브 */}
                   <div className="list-group-item d-flex align-items-start bg-light py-3">
                     <div className="flex-shrink-0"> {/* 이미지 영역 고정 */}
                       <img 
@@ -98,7 +98,7 @@ const ChampionModal = ({ show, onClose, championId, version }) => {
                     </div>
                   </div>
 
-                  {/* 스킬 QWER (수정됨) */}
+                  {/* 스킬 QWER  */}
                   {champData.spells.map((spell, idx) => {
                     const keyMap = ['Q', 'W', 'E', 'R'];
                     return (
