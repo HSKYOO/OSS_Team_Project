@@ -135,11 +135,6 @@ const MyInfo = () => {
                     )) : <span className="text-muted small">아이템 없음</span>}
                   </div>
                 </div>
-
-                {/* 룬 정보 */}
-                <div className="mb-2">
-                   <small className="text-muted">룬 설정 ID: {build.runeStyle}</small>
-                </div>
               </div>
 
               {/* 4. 수정 / 삭제 버튼 영역 */}

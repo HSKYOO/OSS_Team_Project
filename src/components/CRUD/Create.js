@@ -30,7 +30,6 @@ const Create = () => {
     runeSubSlot1: '',
     runeSubSlot2: '',
     runeSubSlot3: '', 
-    // 파편 삭제됨
     itemBuild: []
   });
 
@@ -94,7 +93,7 @@ const Create = () => {
     fetchData();
   }, []);
 
-  // --- 챔피언 상세 정보 로딩 ---
+  // 챔피언 로딩 정보
   useEffect(() => {
     if (formData.championId && version) {
       const fetchSkin = async () => {
@@ -107,7 +106,7 @@ const Create = () => {
     }
   }, [formData.championId, version]);
 
-  // --- 이벤트 핸들러 ---
+  // 이벤트 핸들러
   const handleChampSearch = (e) => {
     const input = e.target.value;
     setChampSearch(input);
@@ -133,7 +132,7 @@ const Create = () => {
     setFormData({ ...formData, itemBuild: formData.itemBuild.filter((_, i) => i !== index) });
   }
 
-  // --- 스펠 선택 핸들러 (이미지 클릭용) ---
+  // 스펠 선택 핸들러
   const handleSpellSelect = (slot, spellId) => {
     setFormData(prev => ({ ...prev, [slot]: spellId }));
   };
@@ -190,7 +189,6 @@ const Create = () => {
     navigate('/myinfo');
   }
 
-  // == 대신 === 사용 (타입 불일치 방지를 위해 String() 변환 후 비교)
   const selectedRuneStyleObj = runes.find(r => String(r.id) === String(formData.runeStyle));
   const selectedSubRuneStyleObj = runes.find(r => String(r.id) === String(formData.runeSubStyle));
 
@@ -207,7 +205,7 @@ const Create = () => {
     transform: isSelected ? 'scale(1.1)' : 'scale(1)'
   });
 
-  // [추가] 스펠 아이콘 스타일
+  // 스펠 아이콘 스타일
   const spellIconStyle = (isSelected, isDisabled) => ({
     width: '40px',
     height: '40px',
