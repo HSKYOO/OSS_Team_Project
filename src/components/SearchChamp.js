@@ -36,7 +36,7 @@ const SearchChamp = ({ onSearch, championData }) => {
 
   const handleSuggestionClick = (suggestion) => {
     setInput(suggestion.name); // 입력창에 이름 채우기
-    onSearch(suggestion.name); // 바로 검색 실행 (선택사항)
+    onSearch(suggestion.name); // 바로 검색 실행 
     setSuggestions([]);
   };
 
